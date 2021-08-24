@@ -1,0 +1,7 @@
+node_modules
+.env
+slappey.json
+.eslintignore
+.eslintrc.js
+package-lock.json
+dist
