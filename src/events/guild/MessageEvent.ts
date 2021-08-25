@@ -1,4 +1,4 @@
-import BaseEvent from '../../utils/structures/BaseEvent';
+import BaseEvent from '../../utils/structures/BaseModels/BaseEvent';
 import { Message } from 'discord.js';
 import DiscordClient from '../../client/client';
 
