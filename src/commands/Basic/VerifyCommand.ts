@@ -5,6 +5,9 @@ import { AccessLevel } from '../../utils/structures/Enums/AccessLevel';
 import { registerSlashCommands } from '../../utils/registry';
 import { Colors } from '../../utils/helpers/Colors';
 import { Majors } from '../../utils/structures/Enums/Major';
+import Member from '../../utils/structures/Member';
+import { GetMemberFromInteraction } from '../../utils/helpers/UserHelpers';
+import VerificationResponse from '../../utils/structures/VerificationResponse';
 
 export default class VerifyCommand extends BaseCommand {
     constructor() {
@@ -48,6 +51,11 @@ export default class VerifyCommand extends BaseCommand {
         });
 
         const [major, firstName, lastName, cNumber] = args;
+
+        const response = new VerificationResponse(firstName, lastName, cNumber, major as Majors);
+
+        const member = await GetMemberFromInteraction(client, interaction);
+
         await interaction.followUp({
             embeds: [
                 {
@@ -62,5 +70,7 @@ export default class VerifyCommand extends BaseCommand {
                 },
             ],
         });
+
+        client.emit('OnVerification', member, response);
     }
 }

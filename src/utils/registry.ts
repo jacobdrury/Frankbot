@@ -6,7 +6,6 @@ import BaseEvent from './structures/BaseModels/BaseEvent';
 import { ApplicationCommandData, Guild } from 'discord.js';
 
 export async function registerCommands(client: DiscordClient, dir: string = '') {
-    let data: Array<ApplicationCommandData>;
     let count = 0;
     await loadCommands(dir, (command: BaseCommand) => {
         client.commands.set(command.name.toLowerCase(), command);
