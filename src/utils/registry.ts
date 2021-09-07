@@ -3,9 +3,10 @@ import { promises as fs } from 'fs';
 import DiscordClient from '../client/client';
 import BaseCommand from './structures/BaseModels/BaseCommand';
 import BaseEvent from './structures/BaseModels/BaseEvent';
-import { ApplicationCommandData } from 'discord.js';
+import { ApplicationCommandData, Guild } from 'discord.js';
 
 export async function registerCommands(client: DiscordClient, dir: string = '') {
+    let data: Array<ApplicationCommandData>;
     let count = 0;
     await loadCommands(dir, (command: BaseCommand) => {
         client.commands.set(command.name.toLowerCase(), command);
@@ -17,15 +18,25 @@ export async function registerCommands(client: DiscordClient, dir: string = '') 
     console.log(`${count} commands loaded!`);
 }
 
-export async function registerSlashCommands(client: DiscordClient, dir: string = '') {
-    const data: Array<ApplicationCommandData> = client.commands.map((command: BaseCommand) => {
-        if (command.options.length) command.initializeOptions();
-        return {
-            name: command.name.toLowerCase(),
-            description: command.description ?? 'None',
-            options: command.options,
-        };
-    });
+export async function registerSlashCommands(client: DiscordClient, guild: Guild, dir: string = ''): Promise<Number> {
+    const data: Array<ApplicationCommandData> = client.commands
+        .filter((command: BaseCommand) => !command.registerIgnore)
+        .map((command: BaseCommand) => {
+            if (command.options.length) command.initializeOptions();
+            return {
+                name: command.name.toLowerCase(),
+                description: command.description ? command.description : 'None',
+                options: command.options,
+                defaultPermission: true,
+            };
+        });
+
+    const commands = await guild.commands.set(data);
+
+    console.log(`${commands.size} slash commands registered:`);
+    console.table(data);
+
+    return commands.size;
 }
 
 export async function loadCommands(dir: string = '', callback: (command: BaseCommand) => any) {

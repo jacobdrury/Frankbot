@@ -3,14 +3,23 @@ import DiscordClient from '../../../client/client';
 import { AccessLevel } from '../Enums/AccessLevel';
 
 export default abstract class BaseCommand {
-  private _accessLevel: AccessLevel;
+    private _registerIgnore: boolean;
+    private _accessLevel: AccessLevel;
     private _description: string = '';
     private _usage: string = '';
     private _aliases: Array<string> = [];
     private _options: Array<ApplicationCommandOptionData> = [];
 
     constructor(private _name: string, private _category: string, accessLevel: AccessLevel = AccessLevel.Enrolled) {
-        this._accessLevel = accessLevel
+        this._accessLevel = accessLevel;
+    }
+
+    public get registerIgnore(): boolean {
+        return this._registerIgnore;
+    }
+
+    public set registerIgnore(value: boolean) {
+        this._registerIgnore = value;
     }
 
     get accessLevel(): AccessLevel {
@@ -57,9 +66,6 @@ export default abstract class BaseCommand {
         return this._options;
     }
 
-    abstract run(client: DiscordClient, message: Message, args: Array<string> | null): Promise<void>;
-    async runSlash(client: DiscordClient, interaction: CommandInteraction, args: Array<string> | null): Promise<void> {
-        await interaction.reply(`${interaction.commandName} is not setup to be a slash command.`);
-    }
+    abstract run(client: DiscordClient, interaction: CommandInteraction, args: Array<string> | null): Promise<void>;
     initializeOptions() {}
 }

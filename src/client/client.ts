@@ -26,20 +26,13 @@ export default class DiscordClient extends Client {
             this.loadGuildMembers(),
             this.loadChannels(),
             initializeEvents(this),
-            registerSlashCommands(this, '../commands'),
         ]);
 
         console.log('Client Initialized!');
 
         // Refresh Local Cache every hour
-        const refreshStaffCache = new CronJob(
-            '0 * * * *',
-            this.loadStaffMembers
-        );
-        const refreshGuildMembers = new CronJob(
-            '0 * * * *',
-            this.loadGuildMembers
-        );
+        const refreshStaffCache = new CronJob('0 * * * *', this.loadStaffMembers);
+        const refreshGuildMembers = new CronJob('0 * * * *', this.loadGuildMembers);
 
         refreshStaffCache.start();
         refreshGuildMembers.start();

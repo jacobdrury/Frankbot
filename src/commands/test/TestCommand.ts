@@ -1,13 +1,15 @@
-import { Message } from 'discord.js';
+import { CommandInteraction, Message } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseModels/BaseCommand';
 import DiscordClient from '../../client/client';
 
 export default class TestCommand extends BaseCommand {
-  constructor() {
-    super('test', 'testing');
-  }
+    constructor() {
+        super('test', 'test');
+    }
 
-  async run(client: DiscordClient, message: Message, args: Array<string>) {
-    message.channel.send('Test command works');
-  }
+    async run(client: DiscordClient, interaction: CommandInteraction, args: string[]): Promise<void> {
+        await interaction.reply({
+            content: 'Pong',
+        });
+    }
 }
