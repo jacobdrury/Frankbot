@@ -39,3 +39,5 @@ const client = new DiscordClient({
 
     await client.login(config.token);
 })();
+
+export default client;

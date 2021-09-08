@@ -35,7 +35,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async verify(interaction: ButtonInteraction, member: Member) {
-        const verifiedRole = await interaction.guild.roles.fetch('668602593022443520');
+        const verifiedRole = await interaction.guild.roles.fetch('417073766561087491');
         await member.guildMember.roles.add(verifiedRole);
         await member.verify();
 

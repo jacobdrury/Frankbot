@@ -62,16 +62,16 @@ export default class WhoTfIsCommand extends BaseCommand {
                     },
                 ],
             });
+        } else {
+            await interaction.followUp({
+                embeds: [
+                    {
+                        color: Colors.Blue,
+                        title: 'Results',
+                        description: `Could not find any users named ${firstName} ${lastName ?? ''}`,
+                    },
+                ],
+            });
         }
-
-        await interaction.followUp({
-            embeds: [
-                {
-                    color: Colors.Blue,
-                    title: 'Results',
-                    description: `Could not find any users named ${firstName} ${lastName ?? ''}`,
-                },
-            ],
-        });
     }
 }
