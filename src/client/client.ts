@@ -37,6 +37,7 @@ export default class DiscordClient extends Client {
         refreshStaffCache.start();
         refreshGuildMembers.start();
     }
+
     async loadChannels(): Promise<any> {
         this._channels = new Collection<string, ChannelSchemaInterface>();
         const channels = await Channels.find({
@@ -64,6 +65,16 @@ export default class DiscordClient extends Client {
         });
 
         members.forEach((u) => this._guildMembers.set(u.discordId, u));
+    }
+
+    async refreshUserCache(discordId: string) {
+        const member = await User.findOne({
+            discordId,
+            inServer: true,
+        });
+
+        if (member.accessLevel >= AccessLevel.Staff) this._staffMembers.set(member.discordId, member);
+        else this._guildMembers.set(member.discordId, member);
     }
 
     public get cachedChannels() {

@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember, Message } from 'discord.js';
+import { ButtonInteraction, CommandInteraction, GuildMember, Message } from 'discord.js';
 import DiscordClient from '../../client/client';
 import Guild from '../../database/models/Guilds';
 import User from '../../database/models/Users';
@@ -18,7 +18,7 @@ export const CreateUser = async (guildMember: GuildMember, modifiers = null) => 
     return await User.create({
         discordId: guildMember.id,
         username: guildMember.user.username,
-        guild,
+        guildId: guildMember.guild.id,
         ...modifiers,
     });
 };
@@ -51,7 +51,7 @@ export const GetMemberFromMessage = async (client: DiscordClient, message: Messa
 
 export const GetMemberFromInteraction = async (
     client: DiscordClient,
-    interaction: CommandInteraction
+    interaction: CommandInteraction | ButtonInteraction
 ): Promise<Member> => {
     const guildMember = interaction.member as GuildMember;
     let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);

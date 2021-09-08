@@ -2,6 +2,7 @@ import BaseEvent from '../../utils/structures/BaseModels/BaseEvent';
 import DiscordClient from '../../client/client';
 import { CommandInteraction, Interaction } from 'discord.js';
 import { GetMemberFromInteraction } from '../../utils/helpers/UserHelpers';
+import { VerificationStatus } from '../../utils/structures/Enums/VerificationStatus';
 
 export default class InteractionCreateEvent extends BaseEvent {
     constructor() {
@@ -30,6 +31,16 @@ export default class InteractionCreateEvent extends BaseEvent {
             interaction.options.data.map((x) => args.push(x.value));
 
             command.run(client, interaction as CommandInteraction, args);
+        }
+
+        if (interaction.isButton()) {
+            switch (interaction.customId) {
+                case VerificationStatus.Approved:
+                case VerificationStatus.Denied: {
+                    client.emit('OnVerificationButtonEvent', interaction, interaction.customId as VerificationStatus);
+                    break;
+                }
+            }
         }
     }
 }

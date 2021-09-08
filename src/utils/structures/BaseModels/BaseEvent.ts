@@ -1,7 +1,7 @@
 import { ClientEvents } from 'discord.js';
 import DiscordClient from '../../../client/client';
 
-const CustomEvents = 'infractionCreate' || 'interactionCreate' || 'OnVerification';
+const CustomEvents = 'infractionCreate' || 'interactionCreate' || 'OnVerification' || 'OnVerificationButtonEvent';
 
 export default abstract class BaseEvent {
     constructor(

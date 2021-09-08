@@ -8,6 +8,7 @@ import { Majors } from '../../utils/structures/Enums/Major';
 import Member from '../../utils/structures/Member';
 import { GetMemberFromInteraction } from '../../utils/helpers/UserHelpers';
 import VerificationResponse from '../../utils/structures/VerificationResponse';
+import { VerificationStatus } from '../../utils/structures/Enums/VerificationStatus';
 
 export default class VerifyCommand extends BaseCommand {
     constructor() {
@@ -54,7 +55,30 @@ export default class VerifyCommand extends BaseCommand {
 
         const response = new VerificationResponse(firstName, lastName, cNumber, major as Majors);
 
+        await client.refreshUserCache(interaction.member.user.id);
+
         const member = await GetMemberFromInteraction(client, interaction);
+
+        if (member.verificationStatus == VerificationStatus.Pending) {
+            await interaction.followUp({
+                ephemeral: true,
+                content:
+                    'You currently have a pending verification request, please wait for a Staff member to review your request.',
+            });
+            return;
+        }
+
+        if (member.verificationStatus == VerificationStatus.Approved) {
+            await interaction.followUp({
+                ephemeral: true,
+                content: 'You have already verified! If you need assistance please reach out to a staff member!',
+            });
+            return;
+        }
+
+        await member.setVerificationStatus(VerificationStatus.Pending);
+
+        await member.setPersonalInfo(response);
 
         await interaction.followUp({
             embeds: [
