@@ -13,9 +13,13 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(client: DiscordClient, interaction: CommandInteraction, args: string[]): Promise<void> {
-        await interaction.deferReply({
-            ephemeral: true,
+        await interaction.reply({
+            content: 'Pong',
         });
+
+        // await interaction.deferReply({
+        //     ephemeral: true,
+        // });
 
         // const guildMembers = await interaction.guild.members.fetch();
 
@@ -29,28 +33,28 @@ export default class TestCommand extends BaseCommand {
         //     }
         // }
 
-        fs.createReadStream('Users.csv')
-            .pipe(csv())
-            .on('data', async (row) => {
-                try {
-                    await Users.findOneAndUpdate(
-                        {
-                            discordId: row['discordId'],
-                        },
-                        {
-                            firstName: row['firstName'],
-                            lastName: row['lastName'],
-                        }
-                    );
-                    count++;
-                } catch (ex) {
-                    console.error(ex);
-                }
-            })
-            .on('end', () => {
-                console.log('CSV file successfully processed');
-            });
+        // fs.createReadStream('Users.csv')
+        //     .pipe(csv())
+        //     .on('data', async (row) => {
+        //         try {
+        //             await Users.findOneAndUpdate(
+        //                 {
+        //                     discordId: row['discordId'],
+        //                 },
+        //                 {
+        //                     firstName: row['firstName'],
+        //                     lastName: row['lastName'],
+        //                 }
+        //             );
+        //             count++;
+        //         } catch (ex) {
+        //             console.error(ex);
+        //         }
+        //     })
+        //     .on('end', () => {
+        //         console.log('CSV file successfully processed');
+        //     });
 
-        await interaction.followUp({ content: `${count} users added to the DB!` });
+        // await interaction.followUp({ content: `${count} users added to the DB!` });
     }
 }

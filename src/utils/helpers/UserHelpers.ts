@@ -5,7 +5,7 @@ import User from '../../database/models/Users';
 import { AccessLevel } from '../structures/Enums/AccessLevel';
 import Member from '../structures/Member';
 
-export const CreateUser = async (guildMember: GuildMember, modifiers = null) => {
+export const CreateUser = async (guildMember: GuildMember, modifiers = {}) => {
     let guild = await Guild.findOne({ guildId: guildMember.guild.id });
 
     if (!guild) {
@@ -23,8 +23,9 @@ export const CreateUser = async (guildMember: GuildMember, modifiers = null) => 
     });
 };
 
-export const GetMemberFromMessage = async (client: DiscordClient, message: Message): Promise<Member> => {
+export const GetMemberFromMessage = async (client: DiscordClient, message: Message): Promise<Member | null> => {
     const guildMember = message.member;
+    if (guildMember == null) return null;
     let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);
 
     // If user is not cached, check DB for user
@@ -37,7 +38,7 @@ export const GetMemberFromMessage = async (client: DiscordClient, message: Messa
                     messageReference: message,
                 },
             });
-            return;
+            return null;
         }
 
         if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);
@@ -52,7 +53,7 @@ export const GetMemberFromMessage = async (client: DiscordClient, message: Messa
 export const GetMemberFromInteraction = async (
     client: DiscordClient,
     interaction: CommandInteraction | ButtonInteraction
-): Promise<Member> => {
+): Promise<Member | null> => {
     const guildMember = interaction.member as GuildMember;
     let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);
 
@@ -61,7 +62,7 @@ export const GetMemberFromInteraction = async (
         const search = await User.findOne({ inServer: true, discordId: guildMember.id });
         if (!search) {
             await interaction.followUp('Something went wrong');
-            return;
+            return null;
         }
 
         if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);

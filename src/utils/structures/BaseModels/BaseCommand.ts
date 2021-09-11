@@ -3,7 +3,7 @@ import DiscordClient from '../../../client/client';
 import { AccessLevel } from '../Enums/AccessLevel';
 
 export default abstract class BaseCommand {
-    private _registerIgnore: boolean;
+    private _registerIgnore: boolean = false;
     private _accessLevel: AccessLevel;
     private _description: string = '';
     private _usage: string = '';

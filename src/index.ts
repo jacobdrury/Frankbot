@@ -1,5 +1,5 @@
-import { registerCommands, registerEvents } from './utils/registry';
-import config from '../settings.json';
+import { registerCommands, registerEvents } from '../src/utils/registry';
+import config from '../src/settings.json';
 import DiscordClient from './client/client';
 import { Intents } from 'discord.js';
 import { connectDatabase } from './database/Mongoose';
@@ -23,7 +23,7 @@ const intents = new Intents().add(
     flags.GUILD_MESSAGE_TYPING
 );
 
-const client = new DiscordClient({
+const client = new DiscordClient(config, {
     partials: ['MESSAGE', 'REACTION'],
     allowedMentions: { parse: ['users', 'roles'], repliedUser: true },
     intents,

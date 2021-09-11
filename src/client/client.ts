@@ -6,6 +6,7 @@ import { CronJob } from 'cron';
 import { initializeEvents, registerSlashCommands } from '../utils/registry';
 import User, { UserSchemaInterface } from '../database/models/Users';
 import Channels, { ChannelSchemaInterface } from '../database/models/Channels';
+import { Config } from '../utils/structures/configSchema';
 
 export default class DiscordClient extends Client {
     private _commands = new Collection<string, BaseCommand>();
@@ -15,9 +16,11 @@ export default class DiscordClient extends Client {
     private _guildMembers = new Collection<string, UserSchemaInterface>();
     private _channels = new Collection<string, ChannelSchemaInterface>();
     private _prefix: string = '>';
+    private _config: Config;
 
-    constructor(options?: ClientOptions) {
+    constructor(config: Config, options: ClientOptions) {
         super(options);
+        this._config = config;
     }
 
     async initialize() {
@@ -73,8 +76,14 @@ export default class DiscordClient extends Client {
             inServer: true,
         });
 
+        if (member == null) return;
+
         if (member.accessLevel >= AccessLevel.Staff) this._staffMembers.set(member.discordId, member);
         else this._guildMembers.set(member.discordId, member);
+    }
+
+    public get config(): Config {
+        return this._config;
     }
 
     public get cachedChannels() {

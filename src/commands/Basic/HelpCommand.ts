@@ -1,4 +1,4 @@
-import { Collection, CommandInteraction, Message, MessageEmbed } from 'discord.js';
+import { ApplicationCommandChoicesData, Collection, CommandInteraction, Message, MessageEmbed } from 'discord.js';
 import BaseCommand from '../../utils/structures/BaseModels/BaseCommand';
 import DiscordClient from '../../client/client';
 import { Colors } from '../../utils/helpers/Colors';
@@ -23,7 +23,9 @@ export default class HelpCommand extends BaseCommand {
     }
 
     initializeOptions() {
-        this.options[0]['choices'] = client.commands.map((command: BaseCommand) => {
+        const option: any = this.options[0];
+
+        option['choices'] = client.commands.map((command: BaseCommand) => {
             return {
                 name: command.name,
                 value: command.name.toLowerCase(),
@@ -34,6 +36,8 @@ export default class HelpCommand extends BaseCommand {
     async run(client: DiscordClient, interaction: CommandInteraction, args: Array<string>) {
         const helpEmbed = new MessageEmbed().setColor(Colors.Blue);
         const member = await GetMemberFromInteraction(client, interaction);
+
+        if (member == null) return;
 
         const filter = (c: BaseCommand) => member.accessLevel >= c.accessLevel && c.name != 'help';
 

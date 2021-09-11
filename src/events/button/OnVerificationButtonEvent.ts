@@ -1,13 +1,12 @@
 import BaseEvent from '../../utils/structures/BaseModels/BaseEvent';
 import DiscordClient from '../../client/client';
 import Member from '../../utils/structures/Member';
-import VerificationResponse from '../../utils/structures/VerificationResponse';
-import { ButtonInteraction, MessageActionRow, MessageButton, TextChannel } from 'discord.js';
+import { ButtonInteraction, Role } from 'discord.js';
 import { Colors } from '../../utils/helpers/Colors';
 import { VerificationStatus } from '../../utils/structures/Enums/VerificationStatus';
-import { GetMemberFromInteraction } from '../../utils/helpers/UserHelpers';
 import { GetMemberFromID } from '../../utils/helpers/GuildHelpers';
 import { userMention } from '@discordjs/builders';
+import { Majors } from '../../utils/structures/Enums/Major';
 
 export default class OnVerificationButtonEvent extends BaseEvent {
     constructor() {
@@ -24,7 +23,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
 
         switch (status) {
             case VerificationStatus.Approved:
-                this.verify(interaction, member);
+                this.verify(client, interaction, member);
                 break;
             case VerificationStatus.Denied:
                 this.deny(interaction, member);
@@ -34,9 +33,15 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         client.guildMembers.set(member.guildMember.id, member);
     }
 
-    async verify(interaction: ButtonInteraction, member: Member) {
-        const verifiedRole = await interaction.guild.roles.fetch('417073766561087491');
-        await member.guildMember.roles.add(verifiedRole);
+    async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
+        const enrolledRole = await interaction.guild.roles.fetch(client.config.enrolledRoleId);
+
+        let majorRole: Role;
+        if (member.major == Majors.CMPS) majorRole = await interaction.guild.roles.fetch(client.config.CMPSRoleId);
+        else if (member.major == Majors.INFX) majorRole = await interaction.guild.roles.fetch(client.config.INFXRoleId);
+        else return;
+
+        await member.guildMember.roles.add([enrolledRole, majorRole]);
         await member.verify();
 
         try {
@@ -61,6 +66,9 @@ export default class OnVerificationButtonEvent extends BaseEvent {
                         ...interaction.message.embeds[0].fields,
                         { name: 'Approved By', value: `${userMention(interaction.member.user.id)}` },
                     ],
+                    thumbnail: {
+                        url: member.guildMember.user.avatarURL({ dynamic: true }),
+                    },
                     timestamp: Date.now(),
                 },
             ],

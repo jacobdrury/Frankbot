@@ -19,7 +19,7 @@ export default class InteractionCreateEvent extends BaseEvent {
 
             const member = await GetMemberFromInteraction(client, interaction);
 
-            if (command.accessLevel > member.accessLevel) {
+            if (command.accessLevel > member!.accessLevel) {
                 await interaction.reply({
                     content: 'You do not have permission to use this command',
                     ephemeral: true,
@@ -27,7 +27,7 @@ export default class InteractionCreateEvent extends BaseEvent {
                 return;
             }
 
-            const args = [];
+            const args: any = [];
             interaction.options.data.map((x) => args.push(x.value));
 
             command.run(client, interaction as CommandInteraction, args);
