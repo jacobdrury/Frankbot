@@ -34,14 +34,13 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
-        const enrolledRole = await interaction.guild.roles.fetch(client.config.enrolledRoleId);
-
         let majorRole: Role;
         if (member.major == Majors.CMPS) majorRole = await interaction.guild.roles.fetch(client.config.CMPSRoleId);
         else if (member.major == Majors.INFX) majorRole = await interaction.guild.roles.fetch(client.config.INFXRoleId);
         else return;
 
-        await member.guildMember.roles.add([enrolledRole, majorRole]);
+        await member.guildMember.roles.add([client.config.enrolledRoleId, majorRole]);
+        await member.guildMember.roles.remove(client.config.unverifiedRoleId);
         await member.verify();
 
         try {
