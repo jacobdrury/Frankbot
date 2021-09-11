@@ -1,5 +1,5 @@
-import { registerCommands, registerEvents } from '../src/utils/registry';
-import config from '../src/settings.json';
+import { registerCommands, registerEvents } from './utils/registry';
+import config from './settings.json';
 import DiscordClient from './client/client';
 import { Intents } from 'discord.js';
 import { connectDatabase } from './database/Mongoose';

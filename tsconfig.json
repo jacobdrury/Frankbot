@@ -4,15 +4,17 @@
         "module": "commonjs",
         "lib": ["es6"],
         "allowJs": true,
-        "outDir": "build",
+        "outDir": "dist",
         "rootDir": "src",
         "strict": true,
-        "noImplicitAny": true,
+        "sourceMap": true,
+        "removeComments": true,
+        "noImplicitAny": false,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "downlevelIteration": true,
         "strictNullChecks": false
     },
-    "include": ["src/**/*.ts", "src/events/client/InteractionCreate.ts"],
+    "include": ["**/*.ts"],
     "exclude": ["src/**/*.spec.ts", "node_modules"]
 }
