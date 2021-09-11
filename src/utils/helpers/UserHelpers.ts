@@ -1,8 +1,9 @@
 import { ButtonInteraction, CommandInteraction, GuildMember, Message } from 'discord.js';
 import DiscordClient from '../../client/client';
 import Guild from '../../database/models/Guilds';
-import User from '../../database/models/Users';
+import User, { UserSchemaInterface } from '../../database/models/Users';
 import { AccessLevel } from '../structures/Enums/AccessLevel';
+import { VerificationStatus } from '../structures/Enums/VerificationStatus';
 import Member from '../structures/Member';
 
 export const CreateUser = async (guildMember: GuildMember, modifiers = {}) => {
@@ -59,10 +60,13 @@ export const GetMemberFromInteraction = async (
 
     // If user is not cached, check DB for user
     if (!dbGuildMember) {
-        const search = await User.findOne({ inServer: true, discordId: guildMember.id });
+        let search: UserSchemaInterface = await User.findOne({ inServer: true, discordId: guildMember.id });
         if (!search) {
-            await interaction.followUp('Something went wrong');
-            return null;
+            const isOwner: boolean = guildMember.guild.ownerId == guildMember.user.id;
+            search = await CreateUser(guildMember, {
+                accessLevel: isOwner ? AccessLevel.Owner : null,
+                verificationStatus: isOwner ? VerificationStatus.Approved : null,
+            });
         }
 
         if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);

@@ -7,6 +7,13 @@ export interface Config {
     MONGO_URI: string;
     LogChannelId: string;
     enrolledRoleId: string;
+    unverifiedRoleId: string;
     CMPSRoleId: string;
+    CMPSAlumniID: string;
     INFXRoleId: string;
+    INFXAlumniId: string;
+    welcomeId: string;
+    modId: string;
+    adminId: string;
+    retiredId: string;
 }

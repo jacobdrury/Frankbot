@@ -18,7 +18,6 @@ export default class RegisterSlashCommands extends BaseCommand {
         });
 
         let count = await registerSlashCommands(client, interaction.guild, '../../commands');
-
         await interaction.followUp({
             embeds: [
                 {

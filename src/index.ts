@@ -1,8 +1,8 @@
 import { registerCommands, registerEvents } from './utils/registry';
-import config from './settings.json';
 import DiscordClient from './client/client';
 import { Intents } from 'discord.js';
 import { connectDatabase } from './database/Mongoose';
+import { Config } from './utils/structures/configSchema';
 
 const flags = Intents.FLAGS;
 const intents = new Intents().add(
@@ -22,6 +22,27 @@ const intents = new Intents().add(
     flags.GUILD_MESSAGE_REACTIONS,
     flags.GUILD_MESSAGE_TYPING
 );
+
+const config: Config = {
+    name: 'Frankbot',
+    language: 'typescript',
+    manager: 'npm',
+    token: process.env.token!,
+    prefix: process.env.prefix!,
+    MONGO_URI: process.env.MONGO_URI!,
+    LogChannelId: process.env.LogChannelId!,
+    enrolledRoleId: process.env.enrolledRoleId!,
+    CMPSRoleId: process.env.CMPSRoleId!,
+    INFXRoleId: process.env.INFXRoleId!,
+    unverifiedRoleId: process.env.unverifiedRoleId,
+    CMPSAlumniID: process.env.CMPSAlumniID,
+    INFXAlumniId: process.env.INFXAlumniId,
+    welcomeId: process.env.welcomeId,
+    modId: process.env.modId,
+    adminId: process.env.adminId,
+    retiredId: process.env.retiredId,
+};
+console.table(config);
 
 const client = new DiscordClient(config, {
     partials: ['MESSAGE', 'REACTION'],
