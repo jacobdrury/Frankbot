@@ -49,13 +49,9 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
             rolesToAdd.push(client.config.enrolledRoleId);
 
-        console.log(member.major == Majors.CMPS);
-        console.log(member.guildMember.roles.cache.has(client.config.CMPSRoleId));
         if (member.major == Majors.CMPS && !member.guildMember.roles.cache.has(client.config.CMPSRoleId))
             rolesToAdd.push(client.config.CMPSRoleId);
 
-        console.log(member.major == Majors.INFX);
-        console.log(member.guildMember.roles.cache.has(client.config.INFXRoleId));
         if (member.major == Majors.INFX && !member.guildMember.roles.cache.has(client.config.INFXRoleId))
             rolesToAdd.push(client.config.INFXRoleId);
 
