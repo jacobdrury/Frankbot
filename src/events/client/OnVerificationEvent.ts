@@ -4,7 +4,7 @@ import Member from '../../utils/structures/Member';
 import VerificationResponse from '../../utils/structures/VerificationResponse';
 import { MessageActionRow, MessageButton, TextChannel } from 'discord.js';
 import { Colors } from '../../utils/helpers/Colors';
-import { userMention } from '@discordjs/builders';
+import { roleMention, userMention } from '@discordjs/builders';
 
 export default class InteractionCreateEvent extends BaseEvent {
     constructor() {
@@ -22,6 +22,7 @@ export default class InteractionCreateEvent extends BaseEvent {
         );
 
         logChannel.send({
+            content: roleMention(client.config.userVerificationRole),
             embeds: [
                 {
                     title: 'Verification Received',

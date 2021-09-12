@@ -27,13 +27,13 @@ const config: Config = {
     name: 'Frankbot',
     language: 'typescript',
     manager: 'npm',
-    token: process.env.token!,
-    prefix: process.env.prefix!,
-    MONGO_URI: process.env.MONGO_URI!,
-    LogChannelId: process.env.LogChannelId!,
-    enrolledRoleId: process.env.enrolledRoleId!,
-    CMPSRoleId: process.env.CMPSRoleId!,
-    INFXRoleId: process.env.INFXRoleId!,
+    token: process.env.token,
+    prefix: process.env.prefix,
+    MONGO_URI: process.env.MONGO_URI,
+    LogChannelId: process.env.LogChannelId,
+    enrolledRoleId: process.env.enrolledRoleId,
+    CMPSRoleId: process.env.CMPSRoleId,
+    INFXRoleId: process.env.INFXRoleId,
     unverifiedRoleId: process.env.unverifiedRoleId,
     CMPSAlumniID: process.env.CMPSAlumniID,
     INFXAlumniId: process.env.INFXAlumniId,
@@ -41,6 +41,7 @@ const config: Config = {
     modId: process.env.modId,
     adminId: process.env.adminId,
     retiredId: process.env.retiredId,
+    userVerificationRole: process.env.userVerificationRole,
 };
 console.table(config);
 

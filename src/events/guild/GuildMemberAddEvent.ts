@@ -14,6 +14,7 @@ export default class GuildMemberAddEvent extends BaseEvent {
     async run(client: DiscordClient, member: GuildMember) {
         try {
             const userDB = await User.findOne({ discordId: member.id });
+            console.log(userDB);
             if (!userDB) {
                 await CreateUser(member);
             } else {
