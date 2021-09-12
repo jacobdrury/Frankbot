@@ -84,9 +84,9 @@ export default class VerifyCommand extends BaseCommand {
                     title: 'Verification Received',
                     color: Colors.Blue,
                     fields: [
-                        { name: 'Name', value: `${firstName} ${lastName}`, inline: true },
-                        { name: 'C Number', value: cNumber, inline: true },
-                        { name: 'Major', value: major, inline: true },
+                        { name: 'Name', value: `${response.firstName} ${response.lastName}`, inline: true },
+                        { name: 'C Number', value: response.cNumber, inline: true },
+                        { name: 'Major', value: response.major, inline: true },
                     ],
                     description: `Your information will be sent to an admin for approval.`,
                 },
