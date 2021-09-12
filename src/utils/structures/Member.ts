@@ -33,7 +33,7 @@ export default class Member implements UserSchemaInterface {
         this._verificationStatus = dbUser.verificationStatus;
     }
 
-    async verify() {
+    async verify(accessLevel: AccessLevel = AccessLevel.Enrolled) {
         await Users.findOneAndUpdate(
             {
                 guildId: this.guildId,
@@ -41,7 +41,7 @@ export default class Member implements UserSchemaInterface {
             },
             {
                 inServer: true,
-                accessLevel: AccessLevel.Enrolled,
+                accessLevel: accessLevel,
                 verificationStatus: VerificationStatus.Approved,
             }
         );
@@ -82,15 +82,7 @@ export default class Member implements UserSchemaInterface {
     }
 
     async setAlumni(config: Config) {
-        await Users.findOneAndUpdate(
-            {
-                guildId: this.guildId,
-                discordId: this.discordId,
-            },
-            {
-                accessLevel: AccessLevel.Alumni,
-            }
-        );
+        this.setAccessLevel(AccessLevel.Alumni);
 
         let rolesToAdd = [config.alumniId];
 
@@ -104,6 +96,18 @@ export default class Member implements UserSchemaInterface {
         }
 
         if (rolesToAdd.length > 1) await this.guildMember.roles.add(rolesToAdd);
+    }
+
+    async setAccessLevel(accessLevel: AccessLevel) {
+        await Users.findOneAndUpdate(
+            {
+                guildId: this.guildId,
+                discordId: this.discordId,
+            },
+            {
+                accessLevel: accessLevel,
+            }
+        );
     }
 
     get firstName(): string {

@@ -4,6 +4,7 @@ export enum AccessLevel {
     Alumni,
     Staff,
     Moderator,
+    Retired,
     Admin,
     Owner,
 }

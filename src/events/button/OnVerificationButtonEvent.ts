@@ -7,6 +7,7 @@ import { VerificationStatus } from '../../utils/structures/Enums/VerificationSta
 import { GetMemberFromID } from '../../utils/helpers/GuildHelpers';
 import { userMention } from '@discordjs/builders';
 import { Majors } from '../../utils/structures/Enums/Major';
+import { AccessLevel } from '../../utils/structures/Enums/AccessLevel';
 
 export default class OnVerificationButtonEvent extends BaseEvent {
     constructor() {
@@ -35,6 +36,15 @@ export default class OnVerificationButtonEvent extends BaseEvent {
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
         const rolesToAdd = [];
+        let accessLevel: AccessLevel = AccessLevel.Enrolled;
+
+        if (member.guildMember.roles.cache.has(client.config.adminId)) {
+            accessLevel = AccessLevel.Admin;
+        } else if (member.guildMember.roles.cache.has(client.config.modId)) {
+            accessLevel = AccessLevel.Moderator;
+        } else if (member.guildMember.roles.cache.has(client.config.retiredId)) {
+            accessLevel = AccessLevel.Retired;
+        }
 
         if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
             rolesToAdd.push(client.config.enrolledRoleId);
@@ -54,7 +64,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         if (member.guildMember.roles.cache.has(client.config.unverifiedRoleId))
             await member.guildMember.roles.remove(client.config.unverifiedRoleId);
 
-        await member.verify();
+        await member.verify(accessLevel);
 
         if (isAlumni) member.setAlumni(client.config);
 
