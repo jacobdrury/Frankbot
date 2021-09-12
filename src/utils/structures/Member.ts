@@ -1,5 +1,6 @@
 import { GuildMember } from 'discord.js';
 import Users, { UserSchemaInterface } from '../../database/models/Users';
+import { Config } from './configSchema';
 import { AccessLevel } from './Enums/AccessLevel';
 import { Majors } from './Enums/Major';
 import { VerificationStatus } from './Enums/VerificationStatus';
@@ -78,6 +79,31 @@ export default class Member implements UserSchemaInterface {
         this._lastName = response.lastName;
         this._major = response.major;
         this._cNumber = response.cNumber;
+    }
+
+    async setAlumni(config: Config) {
+        await Users.findOneAndUpdate(
+            {
+                guildId: this.guildId,
+                discordId: this.discordId,
+            },
+            {
+                accessLevel: AccessLevel.Alumni,
+            }
+        );
+
+        let rolesToAdd = [config.alumniId];
+
+        switch (this.major) {
+            case Majors.CMPS:
+                if (!this.guildMember.roles.cache.has(config.CMPSAlumniID)) rolesToAdd.push(config.CMPSAlumniID);
+                break;
+            case Majors.INFX:
+                if (!this.guildMember.roles.cache.has(config.INFXAlumniId)) rolesToAdd.push(config.INFXAlumniId);
+                break;
+        }
+
+        if (rolesToAdd.length > 1) await this.guildMember.roles.add(rolesToAdd);
     }
 
     get firstName(): string {

@@ -42,6 +42,7 @@ const config: Config = {
     adminId: process.env.adminId,
     retiredId: process.env.retiredId,
     userVerificationRole: process.env.userVerificationRole,
+    alumniId: process.env.alumniId,
 };
 console.table(config);
 

@@ -12,8 +12,6 @@ export default class InteractionCreateEvent extends BaseEvent {
     }
 
     async run(client: DiscordClient, member: Member, response: VerificationResponse) {
-        console.log(member.guildMember.guild.name);
-        console.log(client.config.LogChannelId);
         const logChannel = (await member.guildMember.guild.channels.fetch(client.config.LogChannelId)) as TextChannel;
 
         const row = new MessageActionRow().addComponents(

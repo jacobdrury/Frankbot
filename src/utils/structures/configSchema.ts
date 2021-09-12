@@ -17,4 +17,5 @@ export interface Config {
     adminId: string;
     retiredId: string;
     userVerificationRole: string;
+    alumniId: string;
 }

@@ -33,7 +33,6 @@ export async function registerSlashCommands(client: DiscordClient, guild: Guild,
     const commands = await guild.commands.set(data);
 
     console.log(`${commands.size} slash commands registered:`);
-    console.table(data);
 
     return commands.size;
 }

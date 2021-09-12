@@ -34,14 +34,29 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
-        let majorRole: Role;
-        if (member.major == Majors.CMPS) majorRole = await interaction.guild.roles.fetch(client.config.CMPSRoleId);
-        else if (member.major == Majors.INFX) majorRole = await interaction.guild.roles.fetch(client.config.INFXRoleId);
-        else return;
+        const rolesToAdd = [];
 
-        await member.guildMember.roles.add([client.config.enrolledRoleId, majorRole]);
-        await member.guildMember.roles.remove(client.config.unverifiedRoleId);
+        if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
+            rolesToAdd.push(client.config.enrolledRoleId);
+
+        if (member.major == Majors.CMPS && !member.guildMember.roles.cache.has(client.config.CMPSRoleId))
+            rolesToAdd.push(client.config.CMPSRoleId);
+
+        if (member.major == Majors.INFX && !member.guildMember.roles.cache.has(client.config.INFXRoleId))
+            rolesToAdd.push(client.config.INFXRoleId);
+
+        await member.guildMember.roles.add(rolesToAdd);
+
+        const isAlumni: boolean = member.guildMember.roles.cache.some((role: Role) =>
+            role.name.toLowerCase().includes('alumni')
+        );
+
+        if (member.guildMember.roles.cache.has(client.config.unverifiedRoleId))
+            await member.guildMember.roles.remove(client.config.unverifiedRoleId);
+
         await member.verify();
+
+        if (isAlumni) member.setAlumni(client.config);
 
         try {
             await member.guildMember.send({
@@ -111,7 +126,9 @@ export default class OnVerificationButtonEvent extends BaseEvent {
                         ...interactionEmbed.fields,
                         { name: 'Denied By', value: `${userMention(interaction.member.user.id)}` },
                     ],
-                    image: interactionEmbed.thumbnail,
+                    thumbnail: {
+                        url: member.guildMember.user.avatarURL({ dynamic: true }),
+                    },
                     timestamp: Date.now(),
                 },
             ],
