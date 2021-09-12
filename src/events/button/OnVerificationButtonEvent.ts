@@ -56,6 +56,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         //     rolesToAdd.push(client.config.INFXRoleId);
 
         await member.guildMember.roles.add(client.config.enrolledRoleId).catch();
+        console.log(member.major);
         if (member.major == Majors.CMPS) await member.guildMember.roles.add(client.config.CMPSRoleId).catch();
         if (member.major == Majors.INFX) await member.guildMember.roles.add(client.config.INFXRoleId).catch();
 
