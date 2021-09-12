@@ -4,6 +4,7 @@ import BaseEvent from '../../utils/structures/BaseModels/BaseEvent';
 import DiscordClient from '../../client/client';
 import { CreateUser } from '../../utils/helpers/UserHelpers';
 import User from '../../database/models/Users';
+import { VerificationStatus } from '../../utils/structures/Enums/VerificationStatus';
 
 export default class GuildMemberRemoveEvent extends BaseEvent {
     constructor() {
@@ -14,7 +15,7 @@ export default class GuildMemberRemoveEvent extends BaseEvent {
         try {
             const user = await User.findOneAndUpdate(
                 { discordId: member.id },
-                { inServer: false, username: member.user.username }
+                { inServer: false, username: member.user.username, verificationStatus: VerificationStatus.NotStarted }
             );
 
             if (!user) {
