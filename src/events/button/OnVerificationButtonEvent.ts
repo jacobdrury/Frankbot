@@ -46,24 +46,27 @@ export default class OnVerificationButtonEvent extends BaseEvent {
             accessLevel = AccessLevel.Retired;
         }
 
-        if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
-            rolesToAdd.push(client.config.enrolledRoleId);
+        // if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
+        //     rolesToAdd.push(client.config.enrolledRoleId);
 
-        if (member.major == Majors.CMPS && !member.guildMember.roles.cache.has(client.config.CMPSRoleId))
-            rolesToAdd.push(client.config.CMPSRoleId);
+        // if (member.major == Majors.CMPS && !member.guildMember.roles.cache.has(client.config.CMPSRoleId))
+        //     rolesToAdd.push(client.config.CMPSRoleId);
 
-        if (member.major == Majors.INFX && !member.guildMember.roles.cache.has(client.config.INFXRoleId))
-            rolesToAdd.push(client.config.INFXRoleId);
+        // if (member.major == Majors.INFX && !member.guildMember.roles.cache.has(client.config.INFXRoleId))
+        //     rolesToAdd.push(client.config.INFXRoleId);
 
-        console.log(rolesToAdd);
-        await member.guildMember.roles.add(rolesToAdd);
+        await member.guildMember.roles.add(client.config.enrolledRoleId).catch();
+        if (member.major == Majors.CMPS) await member.guildMember.roles.add(client.config.CMPSRoleId).catch();
+        if (member.major == Majors.INFX) await member.guildMember.roles.add(client.config.INFXRoleId).catch();
+
+        //await member.guildMember.roles.add(rolesToAdd);
 
         const isAlumni: boolean = member.guildMember.roles.cache.some((role: Role) =>
             role.name.toLowerCase().includes('alumni')
         );
 
-        if (member.guildMember.roles.cache.has(client.config.unverifiedRoleId))
-            await member.guildMember.roles.remove(client.config.unverifiedRoleId);
+        // if (member.guildMember.roles.cache.has(client.config.unverifiedRoleId))
+        await member.guildMember.roles.remove(client.config.unverifiedRoleId).catch();
 
         await member.verify(accessLevel);
 
