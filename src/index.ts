@@ -44,7 +44,6 @@ const config: Config = {
     userVerificationRole: process.env.userVerificationRole,
     alumniId: process.env.alumniId,
 };
-console.table(config);
 
 const client = new DiscordClient(config, {
     partials: ['MESSAGE', 'REACTION'],
