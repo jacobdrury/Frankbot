@@ -32,6 +32,24 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
+        await interaction.update({
+            embeds: [
+                {
+                    title: 'Verification Approved',
+                    color: Colors.Blue,
+                    fields: [
+                        ...interaction.message.embeds[0].fields,
+                        { name: 'Approved By', value: `${userMention(interaction.member.user.id)}` },
+                    ],
+                    thumbnail: {
+                        url: member.guildMember.user.avatarURL({ dynamic: true }),
+                    },
+                    timestamp: Date.now(),
+                },
+            ],
+            components: [],
+        });
+
         const rolesToAdd = [];
         let accessLevel: AccessLevel = AccessLevel.Enrolled;
 
@@ -82,15 +100,17 @@ export default class OnVerificationButtonEvent extends BaseEvent {
                 ],
             });
         } catch (ex) {}
+    }
 
+    async deny(interaction: ButtonInteraction, member: Member) {
         await interaction.update({
             embeds: [
                 {
-                    title: 'Verification Approved',
-                    color: Colors.Blue,
+                    title: 'Verification Denied',
+                    color: Colors.Red,
                     fields: [
-                        ...interaction.message.embeds[0].fields,
-                        { name: 'Approved By', value: `${userMention(interaction.member.user.id)}` },
+                        ...interactionEmbed.fields,
+                        { name: 'Denied By', value: `${userMention(interaction.member.user.id)}` },
                     ],
                     thumbnail: {
                         url: member.guildMember.user.avatarURL({ dynamic: true }),
@@ -100,9 +120,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
             ],
             components: [],
         });
-    }
 
-    async deny(interaction: ButtonInteraction, member: Member) {
         try {
             await member.guildMember.send({
                 embeds: [
@@ -123,23 +141,5 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         await member.setVerificationStatus(VerificationStatus.Denied);
 
         const interactionEmbed = interaction.message.embeds[0];
-
-        await interaction.update({
-            embeds: [
-                {
-                    title: 'Verification Denied',
-                    color: Colors.Red,
-                    fields: [
-                        ...interactionEmbed.fields,
-                        { name: 'Denied By', value: `${userMention(interaction.member.user.id)}` },
-                    ],
-                    thumbnail: {
-                        url: member.guildMember.user.avatarURL({ dynamic: true }),
-                    },
-                    timestamp: Date.now(),
-                },
-            ],
-            components: [],
-        });
     }
 }
