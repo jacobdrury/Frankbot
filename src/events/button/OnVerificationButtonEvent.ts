@@ -100,11 +100,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
             ],
             components: [],
         });
-
-        await interaction.followUp({
-            ephemeral: true,
-            content: `${member.guildMember.user.tag} has been approved!`,
-        });
     }
 
     async deny(interaction: ButtonInteraction, member: Member) {
@@ -145,11 +140,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
                 },
             ],
             components: [],
-        });
-
-        await interaction.followUp({
-            ephemeral: true,
-            content: `${member.guildMember.user.tag} has been denied and kicked from the server`,
         });
     }
 }
