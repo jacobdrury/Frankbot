@@ -15,7 +15,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async run(client: DiscordClient, interaction: ButtonInteraction, status: VerificationStatus) {
-        await interaction.deferUpdate();
         const [embed] = interaction.message.embeds;
         const userTag = embed.fields.filter((field) => field.name == 'User Tag')[0].value;
         const userId = userTag.replace(/<@|>/g, '');
