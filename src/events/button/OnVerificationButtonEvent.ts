@@ -32,7 +32,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
     }
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
-        const rolesToAdd = [];
+        const rolesToAdd = [client.config.enrolledRoleId];
         let accessLevel: AccessLevel = AccessLevel.Enrolled;
 
         if (member.guildMember.roles.cache.has(client.config.adminId)) {
@@ -46,22 +46,17 @@ export default class OnVerificationButtonEvent extends BaseEvent {
             accessLevel = AccessLevel.Retired;
         }
 
-        if (!member.guildMember.roles.cache.has(client.config.enrolledRoleId))
-            rolesToAdd.push(client.config.enrolledRoleId);
-
         const isAlumni: boolean = member.guildMember.roles.cache.some((role: Role) =>
             role.name.toLowerCase().includes('alumni')
         );
 
-        if (member.major == Majors.CMPS && !member.guildMember.roles.cache.has(client.config.CMPSRoleId)) {
+        if (member.major == Majors.CMPS) {
             rolesToAdd.push(client.config.CMPSRoleId);
             if (isAlumni) {
                 rolesToAdd.push(client.config.CMPSAlumniID);
                 accessLevel = AccessLevel.Alumni;
             }
-        }
-
-        if (member.major == Majors.INFX && !member.guildMember.roles.cache.has(client.config.INFXRoleId)) {
+        } else if (member.major == Majors.INFX) {
             rolesToAdd.push(client.config.INFXRoleId);
             if (isAlumni) {
                 rolesToAdd.push(client.config.INFXAlumniId);
@@ -72,8 +67,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         await member.guildMember.roles.set(rolesToAdd);
 
         await member.verify(accessLevel);
-
-        // if (isAlumni) member.setAlumni(client.config);
 
         await interaction.update({
             embeds: [
