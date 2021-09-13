@@ -84,18 +84,16 @@ export default class Member implements UserSchemaInterface {
     async setAlumni(config: Config) {
         this.setAccessLevel(AccessLevel.Alumni);
 
-        let rolesToAdd = [config.alumniId];
+        await this.guildMember.roles.add(config.alumniId).catch();
 
         switch (this.major) {
             case Majors.CMPS:
-                if (!this.guildMember.roles.cache.has(config.CMPSAlumniID)) rolesToAdd.push(config.CMPSAlumniID);
+                await this.guildMember.roles.add(config.CMPSAlumniID).catch();
                 break;
             case Majors.INFX:
-                if (!this.guildMember.roles.cache.has(config.INFXAlumniId)) rolesToAdd.push(config.INFXAlumniId);
+                await this.guildMember.roles.add(config.INFXAlumniId).catch();
                 break;
         }
-
-        if (rolesToAdd.length > 1) await this.guildMember.roles.add(rolesToAdd);
     }
 
     async setAccessLevel(accessLevel: AccessLevel) {
