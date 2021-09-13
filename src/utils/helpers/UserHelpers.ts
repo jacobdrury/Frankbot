@@ -27,25 +27,19 @@ export const CreateUser = async (guildMember: GuildMember, modifiers = {}) => {
 export const GetMemberFromMessage = async (client: DiscordClient, message: Message): Promise<Member | null> => {
     const guildMember = message.member;
     if (guildMember == null) return null;
-    let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);
+    let dbGuildMember = await User.findOne({
+        inServer: true,
+        discordId: guildMember.id,
+        guildId: message.guild.id,
+    });
 
     // If user is not cached, check DB for user
     if (!dbGuildMember) {
-        const search = await User.findOne({ inServer: true, discordId: guildMember.id });
-        if (!search) {
-            message.channel.send({
-                content: 'Something went wrong',
-                reply: {
-                    messageReference: message,
-                },
-            });
-            return null;
-        }
-
-        if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);
-        else client.guildMembers.set(search.discordId, search);
-
-        dbGuildMember = search;
+        const isOwner: boolean = guildMember.guild.ownerId == guildMember.user.id;
+        dbGuildMember = await CreateUser(guildMember, {
+            accessLevel: isOwner ? AccessLevel.Owner : null,
+            verificationStatus: isOwner ? VerificationStatus.Approved : null,
+        });
     }
 
     return new Member(guildMember, dbGuildMember);
@@ -56,23 +50,19 @@ export const GetMemberFromInteraction = async (
     interaction: CommandInteraction | ButtonInteraction
 ): Promise<Member | null> => {
     const guildMember = interaction.member as GuildMember;
-    let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);
+    let dbGuildMember = await User.findOne({
+        inServer: true,
+        discordId: guildMember.id,
+        guildId: interaction.guild.id,
+    });
 
     // If user is not cached, check DB for user
     if (!dbGuildMember) {
-        let search: UserSchemaInterface = await User.findOne({ inServer: true, discordId: guildMember.id });
-        if (!search) {
-            const isOwner: boolean = guildMember.guild.ownerId == guildMember.user.id;
-            search = await CreateUser(guildMember, {
-                accessLevel: isOwner ? AccessLevel.Owner : null,
-                verificationStatus: isOwner ? VerificationStatus.Approved : null,
-            });
-        }
-
-        if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);
-        else client.guildMembers.set(search.discordId, search);
-
-        dbGuildMember = search;
+        const isOwner: boolean = guildMember.guild.ownerId == guildMember.user.id;
+        dbGuildMember = await CreateUser(guildMember, {
+            accessLevel: isOwner ? AccessLevel.Owner : null,
+            verificationStatus: isOwner ? VerificationStatus.Approved : null,
+        });
     }
 
     return new Member(guildMember, dbGuildMember);

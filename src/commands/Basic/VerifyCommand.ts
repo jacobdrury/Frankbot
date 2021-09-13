@@ -53,8 +53,6 @@ export default class VerifyCommand extends BaseCommand {
 
         const response = new VerificationResponse(firstName, lastName, cNumber, major as Majors);
 
-        await client.refreshUserCache(interaction.member.user.id);
-
         const member = await GetMemberFromInteraction(client, interaction);
 
         if (member.verificationStatus == VerificationStatus.Pending) {

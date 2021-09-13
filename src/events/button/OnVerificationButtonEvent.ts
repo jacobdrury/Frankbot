@@ -19,7 +19,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         const userTag = embed.fields.filter((field) => field.name == 'User Tag')[0].value;
         const userId = userTag.replace(/<@|>/g, '');
 
-        client.refreshUserCache(userId);
         const member = await GetMemberFromID(client, interaction.guild, userId);
 
         switch (status) {
@@ -30,8 +29,6 @@ export default class OnVerificationButtonEvent extends BaseEvent {
                 this.deny(interaction, member);
                 break;
         }
-
-        client.guildMembers.set(member.guildMember.id, member);
     }
 
     async verify(client: DiscordClient, interaction: ButtonInteraction, member: Member) {
@@ -56,7 +53,7 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         //     rolesToAdd.push(client.config.INFXRoleId);
 
         await member.guildMember.roles.add(client.config.enrolledRoleId).catch();
-        console.log(member.major);
+
         if (member.major == Majors.CMPS) await member.guildMember.roles.add(client.config.CMPSRoleId).catch();
         if (member.major == Majors.INFX) await member.guildMember.roles.add(client.config.INFXRoleId).catch();
 

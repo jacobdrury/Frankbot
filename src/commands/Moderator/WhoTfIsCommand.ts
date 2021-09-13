@@ -33,12 +33,14 @@ export default class WhoTfIsCommand extends BaseCommand {
         const firstName = interaction.options.getString('firstname', true);
         const lastName = interaction.options.getString('lastname');
 
-        let users: Array<UserSchemaInterface> = [...client.guildMembers.values(), ...client.staffMembers.values()];
-
-        users = users.filter((u) => u.firstName?.toLowerCase().includes(firstName.toLowerCase()));
+        let users: Array<UserSchemaInterface> = await Users.find({
+            guildId: interaction.guild.id,
+            inServer: true,
+            firstName: new RegExp(firstName, 'i'),
+        });
 
         if (lastName) {
-            users = users.filter((u) => u?.lastName.includes(lastName));
+            users = users.filter((u) => u?.lastName.toLowerCase().includes(lastName));
         }
 
         let names = '';

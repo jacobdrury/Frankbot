@@ -3,6 +3,8 @@ import DiscordClient from '../../client/client';
 import Member from '../structures/Member';
 import User from '../../database/models/Users';
 import { AccessLevel } from '../structures/Enums/AccessLevel';
+import { CreateUser } from './UserHelpers';
+import { VerificationStatus } from '../structures/Enums/VerificationStatus';
 
 export const resolveMemberFromMessage = async (message: Message, search: any): Promise<GuildMember | null> => {
     let guildMember: GuildMember = null;
@@ -15,19 +17,13 @@ export const resolveMemberFromMessage = async (message: Message, search: any): P
 
 export const GetMemberFromID = async (client: DiscordClient, guild: Guild, id: string): Promise<Member> => {
     const guildMember = await guild.members.fetch(id);
-    let dbGuildMember = client.staffMembers.get(guildMember.id) ?? client.guildMembers.get(guildMember.id);
-
-    // If user is not cached, check DB for user
+    let dbGuildMember = await User.findOne({ inServer: true, discordId: guildMember.id, guildId: guild.id });
     if (!dbGuildMember) {
-        const search = await User.findOne({ inServer: true, discordId: guildMember.id });
-        if (!search) {
-            return;
-        }
-
-        if (search.accessLevel >= AccessLevel.Staff) client.staffMembers.set(search.discordId, search);
-        else client.guildMembers.set(search.discordId, search);
-
-        dbGuildMember = search;
+        const isOwner: boolean = guildMember.guild.ownerId == guildMember.user.id;
+        dbGuildMember = await CreateUser(guildMember, {
+            accessLevel: isOwner ? AccessLevel.Owner : null,
+            verificationStatus: isOwner ? VerificationStatus.Approved : null,
+        });
     }
 
     return new Member(guildMember, dbGuildMember);
