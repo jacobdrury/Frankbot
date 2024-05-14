@@ -1,0 +1,8 @@
+services:
+  app:
+    image: frankbot
+    build: .
+    environment:
+      - DISCORD_TOKEN=
+      - MONGO_URI=
+    restart: always

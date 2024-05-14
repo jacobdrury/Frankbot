@@ -51,15 +51,15 @@ export default class OnVerificationButtonEvent extends BaseEvent {
         );
 
         if (member.major == Majors.CMPS) {
-            rolesToAdd.push(client.config.CMPSRoleId);
+            rolesToAdd.push(client.config.cmpsRoleId);
             if (isAlumni) {
-                rolesToAdd.push(client.config.alumniId, client.config.CMPSAlumniID);
+                rolesToAdd.push(client.config.alumniId, client.config.cmpsAlumniID);
                 accessLevel = AccessLevel.Alumni;
             }
         } else if (member.major == Majors.INFX) {
-            rolesToAdd.push(client.config.INFXRoleId);
+            rolesToAdd.push(client.config.infxRoleId);
             if (isAlumni) {
-                rolesToAdd.push(client.config.alumniId, client.config.INFXAlumniId);
+                rolesToAdd.push(client.config.alumniId, client.config.infoAlumniId);
                 accessLevel = AccessLevel.Alumni;
             }
         }

@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
 import { registerCommands, registerEvents } from './utils/registry';
 import DiscordClient from './client/client';
 import { Intents } from 'discord.js';
 import { connectDatabase } from './database/Mongoose';
 import { Config } from './utils/structures/configSchema';
+
+dotenv.config();
 
 const flags = Intents.FLAGS;
 const intents = new Intents().add(
@@ -27,22 +30,22 @@ const config: Config = {
     name: 'Frankbot',
     language: 'typescript',
     manager: 'npm',
-    token: process.env.token,
-    prefix: process.env.prefix,
-    MONGO_URI: process.env.MONGO_URI,
-    LogChannelId: process.env.LogChannelId,
-    enrolledRoleId: process.env.enrolledRoleId,
-    CMPSRoleId: process.env.CMPSRoleId,
-    INFXRoleId: process.env.INFXRoleId,
-    unverifiedRoleId: process.env.unverifiedRoleId,
-    CMPSAlumniID: process.env.CMPSAlumniID,
-    INFXAlumniId: process.env.INFXAlumniId,
-    welcomeId: process.env.welcomeId,
-    modId: process.env.modId,
-    adminId: process.env.adminId,
-    retiredId: process.env.retiredId,
-    userVerificationRole: process.env.userVerificationRole,
-    alumniId: process.env.alumniId,
+    discordToken: process.env.DISCORD_TOKEN,
+    prefix: process.env.PREFIX,
+    mongoUri: process.env.MONGO_URI,
+    logChannelId: process.env.LOG_CHANNEL_ID,
+    enrolledRoleId: process.env.ENROLLED_ROLE_ID,
+    cmpsRoleId: process.env.CMPS_ROLE_ID,
+    infxRoleId: process.env.INFX_ROLE_ID,
+    unverifiedRoleId: process.env.UNVERIFIED_ROLE_ID,
+    cmpsAlumniID: process.env.CMPS_ALUMNI_ID,
+    infoAlumniId: process.env.INFX_ALUMNI_ID,
+    welcomeId: process.env.WELCOME_ID,
+    modId: process.env.MOD_ID,
+    adminId: process.env.ADMIN_ID,
+    retiredId: process.env.RETIRED_ID,
+    userVerificationRole: process.env.USER_VERIFICATION_ROLE,
+    alumniId: process.env.ALUMNI_ID,
 };
 
 const client = new DiscordClient(config, {
@@ -57,9 +60,9 @@ const client = new DiscordClient(config, {
     await registerCommands(client, '../commands');
     await registerEvents(client, '../events');
 
-    await connectDatabase(config.MONGO_URI);
+    await connectDatabase(config.mongoUri);
 
-    await client.login(config.token);
+    await client.login(config.discordToken);
 })();
 
 export default client;

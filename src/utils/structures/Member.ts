@@ -88,10 +88,10 @@ export default class Member implements UserSchemaInterface {
 
         switch (this.major) {
             case Majors.CMPS:
-                await this.guildMember.roles.add(config.CMPSAlumniID).catch();
+                await this.guildMember.roles.add(config.cmpsAlumniID).catch();
                 break;
             case Majors.INFX:
-                await this.guildMember.roles.add(config.INFXAlumniId).catch();
+                await this.guildMember.roles.add(config.infoAlumniId).catch();
                 break;
         }
     }
